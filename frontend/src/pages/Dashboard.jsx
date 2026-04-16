@@ -3,23 +3,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import api from "../api/axios";
 import Layout from "../components/Layout";
 import VehicleCard from "../components/VehicleCard";
-import { FiSearch, FiTrendingUp, FiPackage, FiCheckCircle, FiClock } from "react-icons/fi";
+import { FiSearch, FiPackage, FiCheckCircle, FiClock } from "react-icons/fi";
+import { UICard } from "../components/ui";
 
 function StatCard({ icon: Icon, label, value, accent }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      style={{
-        background: "var(--surface)",
-        border: "1px solid var(--border)",
-        borderRadius: "14px",
-        padding: "18px 20px",
-        display: "flex",
-        alignItems: "center",
-        gap: "14px",
-      }}
-    >
+    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+      <UICard style={{ padding: "18px 20px", display: "flex", alignItems: "center", gap: "14px" }}>
       <div
         style={{
           width: "40px",
@@ -40,6 +30,7 @@ function StatCard({ icon: Icon, label, value, accent }) {
         </div>
         <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "1px" }}>{label}</div>
       </div>
+      </UICard>
     </motion.div>
   );
 }
