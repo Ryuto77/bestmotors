@@ -1,60 +1,173 @@
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { FiArrowUpRight } from "react-icons/fi";
 
 function VehicleCard({ vehicle }) {
   const navigate = useNavigate();
 
+  const isSold = vehicle.status === "sold";
+
   return (
-    <div
+    <motion.div
       onClick={() => navigate(`/vehicle/${vehicle.vehicle_number}`)}
-      className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur cursor-pointer
-      flex justify-between items-center gap-4 min-h-44 hover:-translate-y-1 hover:bg-white/10
-      shadow-md hover:shadow-xl transition-all duration-200"
+      whileHover={{ y: -4, scale: 1.01 }}
+      whileTap={{ scale: 0.99 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+      style={{
+        background: "var(--surface)",
+        border: "1px solid var(--border)",
+        borderRadius: "16px",
+        cursor: "pointer",
+        overflow: "hidden",
+        position: "relative",
+        transition: "border-color 0.2s, box-shadow 0.2s",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.borderColor = "rgba(232,160,32,0.25)";
+        e.currentTarget.style.boxShadow = "0 12px 40px rgba(0,0,0,0.4)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.borderColor = "var(--border)";
+        e.currentTarget.style.boxShadow = "none";
+      }}
     >
-      <div className="absolute -top-16 -right-16 h-28 w-28 rounded-full bg-blue-500/20 blur-2xl transition group-hover:bg-blue-400/25" />
-
-      {/* LEFT SIDE */}
-      <div className="flex flex-col justify-between flex-1 h-full">
-
-        <div>
-          <h2 className="text-lg font-semibold tracking-wide">
-            {vehicle.vehicle_number}
-          </h2>
-
-          <p className="text-sm text-zinc-300">
-            {vehicle.brand} • {vehicle.model}
-          </p>
-
-          <p className="text-xs text-zinc-500 mt-1">
-            {vehicle.year}
-          </p>
-        </div>
-
-        {/* STATUS */}
-        <div className="mt-2">
-          <span
-            className={`text-sm px-2.5 py-1 rounded-full capitalize ${
-              vehicle.status === "sold"
-                ? "bg-green-500/20 text-green-400"
-                : "bg-blue-500/20 text-blue-300"
-            }`}
-          >
-            {vehicle.status}
-          </span>
-        </div>
-
-      </div>
-
-      {/* RIGHT SIDE IMAGE */}
-      {vehicle.cover_image && (
-        <div className="w-32 h-32 flex-shrink-0">
+      {/* Image */}
+      <div
+        style={{
+          width: "100%",
+          height: "160px",
+          background: "var(--surface2)",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        {vehicle.cover_image ? (
           <img
             src={vehicle.cover_image}
-            className="w-full h-full object-cover rounded-xl border border-white/10"
+            alt={vehicle.vehicle_number}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              transition: "transform 0.4s ease",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
           />
-        </div>
-      )}
+        ) : (
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "linear-gradient(135deg, var(--surface2), var(--surface))",
+            }}
+          >
+            <span style={{ fontSize: "40px", opacity: 0.15 }}>🚗</span>
+          </div>
+        )}
 
-    </div>
+        {/* Status badge */}
+        <div
+          style={{
+            position: "absolute",
+            top: "10px",
+            right: "10px",
+            padding: "4px 10px",
+            borderRadius: "20px",
+            fontSize: "11px",
+            fontWeight: 600,
+            letterSpacing: "0.5px",
+            textTransform: "uppercase",
+            background: isSold ? "var(--sold-bg)" : "var(--unsold-bg)",
+            color: isSold ? "var(--success)" : "var(--danger)",
+            border: `1px solid ${isSold ? "rgba(34,197,94,0.2)" : "rgba(239,68,68,0.2)"}`,
+            backdropFilter: "blur(8px)",
+          }}
+        >
+          {isSold ? "Sold" : "In Stock"}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div style={{ padding: "14px 16px 16px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div style={{ flex: 1 }}>
+            <div
+              className="bebas"
+              style={{
+                fontSize: "20px",
+                letterSpacing: "1.5px",
+                color: "var(--text)",
+                lineHeight: 1.1,
+                marginBottom: "4px",
+              }}
+            >
+              {vehicle.vehicle_number}
+            </div>
+            <div
+              style={{
+                fontSize: "13px",
+                color: "var(--text-muted)",
+                display: "flex",
+                alignItems: "center",
+                gap: "4px",
+              }}
+            >
+              <span>{vehicle.brand}</span>
+              <span style={{ opacity: 0.4 }}>·</span>
+              <span>{vehicle.model}</span>
+              <span style={{ opacity: 0.4 }}>·</span>
+              <span>{vehicle.year}</span>
+            </div>
+          </div>
+
+          <div
+            style={{
+              width: "28px",
+              height: "28px",
+              borderRadius: "50%",
+              border: "1px solid var(--border)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+              marginLeft: "8px",
+            }}
+          >
+            <FiArrowUpRight size={13} color="var(--text-muted)" />
+          </div>
+        </div>
+
+        {/* KM driven */}
+        {vehicle.km_driven && (
+          <div
+            style={{
+              marginTop: "10px",
+              fontSize: "12px",
+              color: "var(--text-muted)",
+              display: "flex",
+              alignItems: "center",
+              gap: "4px",
+            }}
+          >
+            <span
+              style={{
+                width: "6px",
+                height: "6px",
+                borderRadius: "50%",
+                background: "var(--accent)",
+                display: "inline-block",
+                opacity: 0.7,
+              }}
+            />
+            {vehicle.km_driven.toLocaleString()} km
+          </div>
+        )}
+      </div>
+    </motion.div>
   );
 }
 
